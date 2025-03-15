@@ -61,12 +61,11 @@ public class Build {
 
   public static String longestWordHelper(Vertex<String> current, Set<Vertex<String>> visited) {
     // base case
-    if (current == null || visited.contains(current))
-      return "";
-
+    if (current == null || visited.contains(current)) return "";
+    // ternary op ensures non-null value
+    String longest = (current.data != null) ? current.data : ""; 
+    //track where we've been to avoid looping
     visited.add(current);
-
-    String longest = current.data;
 
     for (Vertex<String> neighbor : current.neighbors) {
       String candidate = longestWordHelper(neighbor, visited);
@@ -99,7 +98,7 @@ public class Build {
 
     //if one of current's neighbors IS current 
     //that means it self-loops -> print it out!
-    if (current.neighbors.contains(current)) {
+    if (current.neighbors != null && current.neighbors.contains(current)) {
       System.out.println(current.data);
     }
 
