@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -149,6 +150,25 @@ public class Build {
    * @return a set of values that cannot be reached from the starting value
    */
   public static <T> Set<T> unreachable(Map<T, List<T>> graph, T starting) {
-    return new HashSet<>();
+    if (graph == null || starting == null) return new HashSet<>();
+    Set<T> visited = new HashSet<>();
+
+    unreachableHelper(graph, starting, visited);
+
+    Set<T> result = new HashSet<>(graph.keySet());
+    result.removeAll(visited);
+    return result;
+  }
+
+  private static <T> void unreachableHelper(Map<T, List<T>> graph, T current, Set<T> visited) {
+    //base cases
+    if (current == null || visited.contains(current)) return;
+    //add current to visited to avoid looping
+    visited.add(current);
+    //iterate and recurse
+    //getOrDefault avoids nullPointerException here
+    for (T neighbor : graph.getOrDefault(current, new ArrayList<>())) {
+      unreachableHelper(graph, neighbor, visited);
+    }
   }
 }
