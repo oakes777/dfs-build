@@ -14,6 +14,29 @@ public class Build {
    * @param k the maximum word length (exclusive)
    */
   public static void printShortWords(Vertex<String> vertex, int k) {
+    //base case
+    if (vertex == null) return;
+    //instantiate visited Set to avoid cycling
+    Set<Vertex<String>> visited = new HashSet<>();
+    //call helper method to run algorithm
+    printShortWordsHelper(vertex, k, visited);
+  }
+  private static void printShortWordsHelper(Vertex<String> current, int k, Set<Vertex<String>> visited) {
+    //base case - 
+    if (current == null) return;
+    //if current already visited immediately return
+    if (visited.contains(current)) return;
+    //add current vertex to visited Set tracker
+    visited.add(current);
+    //print current 'root' if it's shorter than k
+    if (current.data != null && current.data.length() < k) {
+      System.out.println(current.data);
+    } 
+    if (current.neighbors != null) {
+      for (Vertex<String> neighbor : current.neighbors) {
+        printShortWordsHelper(neighbor, k, visited);
+      }
+    }
   }
 
   /**
@@ -23,7 +46,25 @@ public class Build {
    * @return the longest reachable word, or an empty string if the vertex is null
    */
   public static String longestWord(Vertex<String> vertex) {
-    return "";
+    if (vertex == null) return "";
+    Set<Vertex<String>> visited = new HashSet<>();
+    return longestWordHelper(vertex, visited);
+  }
+  public static String longestWordHelper(Vertex<String> current, Set<Vertex<String>> visited) {
+    //base case
+    if (current == null || visited.contains(current)) return "";
+
+    visited.add(current);
+
+    String longest = current.data;
+
+    for (Vertex<String> neighbor : current.neighbors) {
+      String candidate = longestWordHelper(neighbor, visited);
+      if (candidate.length() > longest.length()) {
+        longest = candidate;
+      }
+    }
+    return longest;
   }
 
   /**
